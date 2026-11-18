@@ -1,0 +1,12 @@
+# data and generated outputs (re-created by `make data` / `make train`)
+/data/
+/mlruns/
+/mlflow.db
+/artifacts/*.parquet
+/artifacts/cases.db
+/artifacts/drift_report.html
+__pycache__/
+.pytest_cache/
+*.pyc
+.venv/
+.ruff_cache/

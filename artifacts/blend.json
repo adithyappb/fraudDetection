@@ -1,0 +1,19 @@
+{
+  "features": [
+    "p_xgb",
+    "p_gnn",
+    "gnn_dev_mean",
+    "gnn_dev_max"
+  ],
+  "coef": {
+    "p_xgb": 1.0668253898620605,
+    "p_gnn": -0.14662562310695648,
+    "gnn_dev_mean": 0.10624068230390549,
+    "gnn_dev_max": 0.17623339593410492
+  },
+  "intercept": -1.760208249092102,
+  "valid_pr_auc_xgb": 0.8556196986268526,
+  "valid_pr_auc_blend": 0.8620732996838499,
+  "threshold": 0.05404825881123543,
+  "gnn_default": 0.2778761684894562
+}

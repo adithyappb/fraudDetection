@@ -1,0 +1,51 @@
+# Replay producer (run on demand):  kubectl -n fraud create job replay-1 --from=cronjob/replay-producer
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: replay-producer
+  namespace: fraud
+spec:
+  schedule: "0 0 1 1 *"          # effectively manual; trigger with `kubectl create job --from=...`
+  suspend: true
+  jobTemplate:
+    spec:
+      backoffLimit: 1
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: producer
+              image: fraud-platform:latest
+              imagePullPolicy: IfNotPresent
+              command: ["python", "-m", "fraudplat.streaming.producer", "--sink", "kafka", "--rate", "200"]
+              envFrom: [{configMapRef: {name: fraud-env}}]
+---
+# Drift monitor: hourly Evidently check; retrains automatically when drift/performance thresholds trip.
+# The API hot-reloads the new model from the shared volume.
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: drift-monitor
+  namespace: fraud
+spec:
+  schedule: "17 * * * *"
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: drift
+              image: fraud-platform:latest
+              imagePullPolicy: IfNotPresent
+              command: ["python", "-m", "fraudplat.monitoring.drift", "--auto-retrain"]
+              envFrom: [{configMapRef: {name: fraud-env}}]
+              volumeMounts:
+                - {name: state, mountPath: /state}
+                - {name: state, mountPath: /app/data, subPath: data}
+              resources:
+                requests: {cpu: 500m, memory: 2Gi}
+                limits: {memory: 4Gi}
+          volumes: [{name: state, persistentVolumeClaim: {claimName: fraud-state}}]

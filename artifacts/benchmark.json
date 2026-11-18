@@ -1,0 +1,9 @@
+{
+  "in_process": {
+    "n": 5000,
+    "p50_ms": 1.1,
+    "p95_ms": 1.63,
+    "p99_ms": 2.83,
+    "throughput_tps_single_core": 825.79
+  }
+}

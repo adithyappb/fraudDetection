@@ -1,0 +1,59 @@
+# Central configuration. Every module reads from here (override path with FRAUD_CONFIG).
+data:
+  # "ieee" = Kaggle IEEE-CIS files in data/raw/ ; "synthetic" = schema-identical generator
+  # "auto" = use IEEE-CIS if data/raw/train_transaction.csv exists, else synthetic
+  source: auto
+  raw_dir: data/raw
+  processed_dir: data/processed
+  synthetic_rows: 300000
+  seed: 42
+  # chronological split on TransactionDT (fractions of the timeline)
+  train_frac: 0.70
+  valid_frac: 0.15
+
+features:
+  velocity_windows_sec: [3600, 86400, 604800]   # 1h, 24h, 7d
+
+feast:
+  repo_path: feature_repo
+  use_feast: auto        # auto -> use Feast if importable, else built-in point-in-time store
+
+xgboost:
+  n_estimators: 600
+  max_depth: 7
+  learning_rate: 0.05
+  subsample: 0.8
+  colsample_bytree: 0.7
+  min_child_weight: 3
+  early_stopping_rounds: 50
+  class_weight_power: 0.5   # scale_pos_weight = (neg/pos) ** power  (1.0 = full inverse frequency)
+
+gnn:
+  hidden: 64
+  layers: 2
+  epochs: 200
+  lr: 0.005
+  dropout: 0.3
+  max_entity_degree: 200     # hub entities (e.g. very common devices) are dropped from the graph
+
+serving:
+  artifacts_dir: artifacts
+  alert_threshold: auto      # auto -> threshold chosen on validation set for precision >= target
+  target_precision: 0.80
+  db_path: artifacts/cases.db
+
+kafka:
+  bootstrap: localhost:9092
+  topic_in: transactions
+  topic_out: fraud-scores
+  group_id: fraud-scorer
+
+monitoring:
+  drift_share_threshold: 0.30   # retrain if >30% of monitored features drift
+  critical_features: [log_amount, amt_to_acct_mean]   # ...or if any of these drifts on its own
+  pr_auc_drop_threshold: 0.10   # or if PR-AUC on analyst feedback drops by >0.10 (absolute)
+  min_feedback_labels: 200
+
+mlflow:
+  tracking_uri: sqlite:///mlflow.db
+  experiment: fraud-detection

@@ -1,0 +1,53 @@
+# Scoring API + Kafka consumer. replicas: 1 per Kafka partition at most; the producer keys by
+# account so each replica owns a disjoint set of accounts' stream state.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fraud-api
+  namespace: fraud
+spec:
+  replicas: 1
+  selector: {matchLabels: {app: fraud-api}}
+  template:
+    metadata:
+      labels: {app: fraud-api}
+      annotations: {prometheus.io/scrape: "true", prometheus.io/port: "8000", prometheus.io/path: /metrics}
+    spec:
+      initContainers:
+        - name: seed-state            # copy baked-in model + Feast data to the PVC on first start
+          image: fraud-platform:latest
+          imagePullPolicy: IfNotPresent
+          command: ["sh", "-c", "mkdir -p /state/artifacts /state/data && cp -rn /app/artifacts/. /state/artifacts/ && cp -rn /app/data/. /state/data/"]
+          volumeMounts: [{name: state, mountPath: /state}]
+      containers:
+        - name: api
+          image: fraud-platform:latest
+          imagePullPolicy: IfNotPresent
+          envFrom: [{configMapRef: {name: fraud-env}}]
+          env: [{name: KAFKA_ENABLED, value: "1"}]
+          ports: [{containerPort: 8000}]
+          volumeMounts:
+            - {name: state, mountPath: /state}
+            - {name: state, mountPath: /app/data, subPath: data}
+          resources:
+            requests: {cpu: 500m, memory: 1Gi}
+            limits: {memory: 2Gi}
+          readinessProbe:
+            httpGet: {path: /health, port: 8000}
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          livenessProbe:
+            httpGet: {path: /health, port: 8000}
+            initialDelaySeconds: 60
+            periodSeconds: 20
+      volumes: [{name: state, persistentVolumeClaim: {claimName: fraud-state}}]
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fraud-api
+  namespace: fraud
+spec:
+  type: NodePort
+  selector: {app: fraud-api}
+  ports: [{port: 8000, targetPort: 8000, nodePort: 30800}]

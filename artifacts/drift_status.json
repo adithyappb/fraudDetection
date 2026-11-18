@@ -1,0 +1,151 @@
+{
+  "checked_at": 1795021487.4619527,
+  "n_current": 3000,
+  "data_drift": {
+    "engine": "evidently",
+    "drift_share": 0.4583333333333333,
+    "n_features": 24,
+    "drifted_features": [
+      "C1",
+      "C13",
+      "C14",
+      "acct_amt_mean",
+      "acct_amt_std",
+      "dev_amt_mean",
+      "dev_cnt_24h",
+      "dist1",
+      "log_amount",
+      "uid_amt_sum_24h",
+      "uid_cnt_7d"
+    ],
+    "per_feature": {
+      "log_amount": {
+        "method": "Wasserstein distance (normed)",
+        "value": 1.48454,
+        "drifted": true
+      },
+      "amt_cents": {
+        "method": "Wasserstein distance (normed)",
+        "value": 0.06856,
+        "drifted": false
+      },
+      "hour": {
+        "method": "Wasserstein distance (normed)",
+        "value": 0.056,
+        "drifted": false
+      },
+      "amt_to_acct_mean": {
+        "method": "Wasserstein distance (normed)",
+        "value": 0.05329,
+        "drifted": false
+      },
+      "amt_zscore": {
+        "method": "Wasserstein distance (normed)",
+        "value": 0.04879,
+        "drifted": false
+      },
+      "amt_to_dev_mean": {
+        "method": "Wasserstein distance (normed)",
+        "value": 0.06308,
+        "drifted": false
+      },
+      "uid_cnt_1h": {
+        "method": "Jensen-Shannon distance",
+        "value": 0.0098,
+        "drifted": false
+      },
+      "uid_cnt_24h": {
+        "method": "Wasserstein distance (normed)",
+        "value": 0.0873,
+        "drifted": false
+      },
+      "uid_cnt_7d": {
+        "method": "Wasserstein distance (normed)",
+        "value": 0.23467,
+        "drifted": true
+      },
+      "uid_amt_sum_24h": {
+        "method": "Wasserstein distance (normed)",
+        "value": 0.93325,
+        "drifted": true
+      },
+      "uid_secs_since_last": {
+        "method": "Wasserstein distance (normed)",
+        "value": 0.06935,
+        "drifted": false
+      },
+      "dev_new_for_uid": {
+        "method": "Jensen-Shannon distance",
+        "value": 0.00298,
+        "drifted": false
+      },
+      "dev_changed": {
+        "method": "Jensen-Shannon distance",
+        "value": 0.00557,
+        "drifted": false
+      },
+      "email_changed": {
+        "method": "Jensen-Shannon distance",
+        "value": 0.0,
+        "drifted": false
+      },
+      "dev_cnt_24h": {
+        "method": "Wasserstein distance (normed)",
+        "value": 0.12743,
+        "drifted": true
+      },
+      "card_addr_changed": {
+        "method": "Jensen-Shannon distance",
+        "value": 0.00475,
+        "drifted": false
+      },
+      "acct_amt_mean": {
+        "method": "Wasserstein distance (normed)",
+        "value": 3.25069,
+        "drifted": true
+      },
+      "acct_amt_std": {
+        "method": "Wasserstein distance (normed)",
+        "value": 2.35744,
+        "drifted": true
+      },
+      "acct_night_ratio": {
+        "method": "Wasserstein distance (normed)",
+        "value": 0.0465,
+        "drifted": false
+      },
+      "dev_amt_mean": {
+        "method": "Wasserstein distance (normed)",
+        "value": 3.18751,
+        "drifted": true
+      },
+      "C1": {
+        "method": "Wasserstein distance (normed)",
+        "value": 7.02543,
+        "drifted": true
+      },
+      "C13": {
+        "method": "Wasserstein distance (normed)",
+        "value": 4.00894,
+        "drifted": true
+      },
+      "C14": {
+        "method": "Wasserstein distance (normed)",
+        "value": 7.02543,
+        "drifted": true
+      },
+      "dist1": {
+        "method": "Wasserstein distance (normed)",
+        "value": 1.63742,
+        "drifted": true
+      }
+    }
+  },
+  "reasons": [
+    "data drift: 46% of features drifted (> 30%)",
+    "critical feature drift: log_amount"
+  ],
+  "baseline_pr_auc": 0.8704550697743189,
+  "live_pr_auc": null,
+  "retrain": true
+}
