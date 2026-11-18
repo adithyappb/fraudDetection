@@ -1,25 +1,40 @@
-"""Grad-CAM explanations (MONAI) + quantitative localisation against radiologist boxes."""
+"""Grad-CAM explanations + quantitative localisation against radiologist boxes.
+
+Grad-CAM (Selvaraju et al., 2017): weight each feature map of a convolutional layer by the spatially
+averaged gradient of the class logit, sum, ReLU, upsample. The layer is a stride-16 block (10 x 10 map
+at 160 px input): the last block (5 x 5) is too coarse for small findings such as nodules - measured
+pointing-game accuracy on the radiologist boxes is 0.31 vs 0.14 for the last block (chance 0.07).
+"""
 from __future__ import annotations
 
 import numpy as np
 import torch
+import torch.nn.functional as F
 from matplotlib import colormaps
-from monai.visualize import GradCAM
 
-from .models import CAM_LAYER, to_input
+from .models import to_input
+
+CAM_LAYER = {"efficientnet_b0": "features.4", "densenet121": "features.denseblock3"}   # stride-16 blocks
 
 
 class Explainer:
     def __init__(self, model: torch.nn.Module, arch: str):
         self.model = model
-        self.cam = GradCAM(nn_module=model, target_layers=CAM_LAYER[arch])
+        layer = dict(model.named_modules())[CAM_LAYER[arch]]
+        self._store = {}
+        layer.register_forward_hook(lambda m, i, o: self._store.__setitem__("act", o))
+        layer.register_full_backward_hook(lambda m, gi, go: self._store.__setitem__("grad", go[0]))
 
     def __call__(self, img01: np.ndarray, class_idx: int) -> np.ndarray:
         """img01 [H, W] in [0,1] -> CAM [H, W] in [0,1] (upsampled to the input size)."""
         self.model.eval()
-        x = to_input(img01).requires_grad_(True)
+        self.model.zero_grad()
         with torch.enable_grad():
-            cam = self.cam(x=x, class_idx=class_idx)[0, 0].detach().numpy()
+            logit = self.model(to_input(img01).requires_grad_(True))[0, class_idx]
+            logit.backward()
+        act, grad = self._store["act"].detach(), self._store["grad"].detach()
+        cam = F.relu((grad.mean((2, 3), keepdim=True) * act).sum(1, keepdim=True))
+        cam = F.interpolate(cam, size=img01.shape, mode="bilinear", align_corners=False)[0, 0].numpy()
         cam = cam - cam.min()
         return cam / cam.max() if cam.max() > 0 else cam
 

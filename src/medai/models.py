@@ -10,7 +10,6 @@ from torchvision import models as tvm
 
 log = logging.getLogger(__name__)
 IMAGENET_MEAN, IMAGENET_STD = 0.449, 0.226            # grayscale equivalent of ImageNet stats
-CAM_LAYER = {"efficientnet_b0": "features.8", "densenet121": "features.norm5"}
 
 
 def build_classifier(arch: str, n_classes: int, pretrained: str = "none") -> tuple[torch.nn.Module, str]:

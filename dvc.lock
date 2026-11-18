@@ -1,0 +1,215 @@
+schema: '2.0'
+stages:
+  preprocess:
+    cmd: python -m medai.preprocess
+    deps:
+    - path: data/raw
+      hash: md5
+      md5: 4ea2c8a2bf4770d3f7b1bac4b22d174b.dir
+      size: 533425659
+      nfiles: 7085
+    - path: src/medai/data
+      hash: md5
+      md5: a38e3dda6d4799cc843949a4bd1c572f.dir
+      size: 3146875
+      nfiles: 11
+    - path: src/medai/preprocess.py
+      hash: md5
+      md5: 6c41f7bf8867ef8846890220f8d4ed6e
+      size: 4512
+    params:
+      params.yaml:
+        classification.findings:
+        - Atelectasis
+        - Cardiomegaly
+        - Effusion
+        - Infiltration
+        - Mass
+        - Nodule
+        - Pneumonia
+        - Pneumothorax
+        classification.image_size: 160
+        classification.split:
+        - 0.75
+        - 0.12
+        - 0.13
+        data:
+          source: auto
+          seed: 7
+          cxr_raw_dir: data/raw/nih-cxr14
+          ct_raw_dir: data/raw/Task09_Spleen
+          phantom_cxr_images: 7000
+          phantom_ct_volumes: 40
+    outs:
+    - path: data/processed
+      hash: md5
+      md5: 6fabd4bd0c9ab7c3a2ba3c14558db420.dir
+      size: 179783558
+      nfiles: 4
+    - path: metrics/data_summary.json
+      hash: md5
+      md5: 72f76915c29afc9029a85385faffaea6
+      size: 1261
+  train_cls:
+    cmd: python -m medai.train_cls
+    deps:
+    - path: data/processed
+      hash: md5
+      md5: 6fabd4bd0c9ab7c3a2ba3c14558db420.dir
+      size: 179783558
+      nfiles: 4
+    - path: src/medai/models.py
+      hash: md5
+      md5: e1f8b61ea7a7b29f580e3b499d21ee9f
+      size: 2386
+    - path: src/medai/train_cls.py
+      hash: md5
+      md5: ce40b434310788ea4e2c5caa706e2459
+      size: 4478
+    params:
+      params.yaml:
+        classification.arch: efficientnet_b0
+        classification.batch_size: 32
+        classification.epochs: 6
+        classification.findings:
+        - Atelectasis
+        - Cardiomegaly
+        - Effusion
+        - Infiltration
+        - Mass
+        - Nodule
+        - Pneumonia
+        - Pneumothorax
+        classification.image_size: 160
+        classification.lr: 0.001
+        classification.pretrained: imagenet
+        classification.weight_decay: 0.0001
+    outs:
+    - path: metrics/train_cls.json
+      hash: md5
+      md5: 4dc5aa39b25968d0ffb8ef91b81480dc
+      size: 1013
+    - path: models/cxr_classifier.pt
+      hash: md5
+      md5: fdfe9b19f99440d394cf3dbfdc97e638
+      size: 16367665
+  train_seg:
+    cmd: python -m medai.train_seg
+    deps:
+    - path: data/processed
+      hash: md5
+      md5: 6fabd4bd0c9ab7c3a2ba3c14558db420.dir
+      size: 179783558
+      nfiles: 4
+    - path: src/medai/models.py
+      hash: md5
+      md5: e1f8b61ea7a7b29f580e3b499d21ee9f
+      size: 2386
+    - path: src/medai/train_seg.py
+      hash: md5
+      md5: 1c27ad634b363dd64c617cbad8054107
+      size: 4401
+    params:
+      params.yaml:
+        segmentation:
+          roi:
+          - 64
+          - 64
+          - 64
+          pixdim:
+          - 1.5
+          - 1.5
+          - 2.0
+          hu_window:
+          - -57
+          - 164
+          channels:
+          - 16
+          - 32
+          - 64
+          - 128
+          max_iterations: 600
+          val_every: 100
+          lr: 0.0003
+    outs:
+    - path: metrics/train_seg.json
+      hash: md5
+      md5: 005a1dce2678cedab0290d934ecbdb3f
+      size: 885
+    - path: models/spleen_unet3d.pt
+      hash: md5
+      md5: a26b8966a02c50d9a1d43ea04cb42a03
+      size: 4800491
+  evaluate:
+    cmd: python -m medai.evaluate
+    deps:
+    - path: data/processed
+      hash: md5
+      md5: 6fabd4bd0c9ab7c3a2ba3c14558db420.dir
+      size: 179783558
+      nfiles: 4
+    - path: models/cxr_classifier.pt
+      hash: md5
+      md5: fdfe9b19f99440d394cf3dbfdc97e638
+      size: 16367665
+    - path: models/spleen_unet3d.pt
+      hash: md5
+      md5: a26b8966a02c50d9a1d43ea04cb42a03
+      size: 4800491
+    - path: models/thresholds.json
+      hash: md5
+      md5: 64350beced5b5c04e51225a47f15abf6
+      size: 376
+    - path: src/medai/evaluate.py
+      hash: md5
+      md5: 0cad88444dd867ab29856b6c82ee9ac2
+      size: 8521
+    - path: src/medai/explain.py
+      hash: md5
+      md5: fbbd2969e3fc6ddc1a1cc2f3ac26cba5
+      size: 2979
+    params:
+      params.yaml:
+        explain:
+          cam_threshold: 0.5
+    outs:
+    - path: docs/figures/gradcam_examples.png
+      hash: md5
+      md5: dd14f2e6b415313084ffc01bf22c4bef
+      size: 1002030
+    - path: docs/figures/roc_per_finding.png
+      hash: md5
+      md5: 433e16268b5ffb6a8c509c0e13d15c64
+      size: 103096
+    - path: metrics/classification.json
+      hash: md5
+      md5: 5fbb4d4c12de0990b8e6ee82f9afc14f
+      size: 3424
+    - path: metrics/segmentation.json
+      hash: md5
+      md5: 9273e160c5cb198c91ff7f3958dd78b7
+      size: 808
+  calibrate:
+    cmd: python -m medai.calibrate
+    deps:
+    - path: data/processed
+      hash: md5
+      md5: 6fabd4bd0c9ab7c3a2ba3c14558db420.dir
+      size: 179783558
+      nfiles: 4
+    - path: models/cxr_classifier.pt
+      hash: md5
+      md5: fdfe9b19f99440d394cf3dbfdc97e638
+      size: 16367665
+    - path: src/medai/calibrate.py
+      hash: md5
+      md5: 91f031e83f65764fa46acef8afc794ec
+      size: 1303
+    params:
+      params.yaml:
+        classification.target_specificity: 0.8
+    outs:
+    - path: models/thresholds.json
+      hash: md5
+      md5: 64350beced5b5c04e51225a47f15abf6
+      size: 376

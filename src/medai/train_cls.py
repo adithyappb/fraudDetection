@@ -93,24 +93,10 @@ def run() -> None:
             best = auc
             torch.save({"state_dict": model.state_dict(), "arch": cfg["arch"], "findings": findings,
                         "image_size": cfg["image_size"], "weights_init": weights_used}, MODELS / "cxr_classifier.pt")
-    # per-finding decision thresholds chosen on VALIDATION (Youden J), never on test
-    ckpt = torch.load(MODELS / "cxr_classifier.pt", weights_only=False)
-    model.load_state_dict(ckpt["state_dict"])
-    pva = predict(model, imgs, va_sel)
-    from sklearn.metrics import roc_curve
-    thr = {}
-    for k, f in enumerate(findings):
-        if 0 < yva[:, k].sum() < len(yva):
-            fpr, tpr, t = roc_curve(yva[:, k], pva[:, k])
-            thr[f] = float(t[np.argmax(tpr - fpr)])
-        else:
-            thr[f] = 0.5
-    ckpt["thresholds"] = thr
-    torch.save(ckpt, MODELS / "cxr_classifier.pt")
     path("metrics").mkdir(exist_ok=True)
     json.dump({"history": history, "best_val_macro_auroc": best, "weights_init": weights_used,
                "train_images": int(len(tr_sel)), "val_images": int(len(va_sel)),
-               "pos_weight": dict(zip(findings, pos_weight.round(decimals=2).tolist()))},
+               "pos_weight": dict(zip(findings, pos_weight.round(decimals=2).tolist(), strict=False))},
               open(path("metrics/train_cls.json"), "w"), indent=2)
 
 

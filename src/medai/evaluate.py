@@ -31,6 +31,8 @@ def safe_auc(y, p):
 
 def load_classifier():
     ckpt = torch.load(MODELS / "cxr_classifier.pt", weights_only=False)
+    thr = MODELS / "thresholds.json"
+    ckpt["thresholds"] = json.load(open(thr))["thresholds"] if thr.exists() else {f: 0.5 for f in ckpt["findings"]}
     model, _ = build_classifier(ckpt["arch"], len(ckpt["findings"]), "none")
     model.load_state_dict(ckpt["state_dict"])
     return model.eval(), ckpt
@@ -123,7 +125,7 @@ def _figure_cam_examples(examples):
     fig, axes = plt.subplots(2, (n + 1) // 2, figsize=(3.2 * ((n + 1) // 2), 7), facecolor="#fcfcfb")
     for ax in axes.ravel():
         ax.axis("off")
-    for ax, (name, f, img, cam, (x, y, w, h), pr) in zip(axes.ravel(), examples):
+    for ax, (name, f, img, cam, (x, y, w, h), pr) in zip(axes.ravel(), examples, strict=False):
         ax.imshow(overlay(img, cam))
         ax.add_patch(plt.Rectangle((x, y), w, h, fill=False, ec="white", lw=1.5, ls="--"))
         ax.set_title(f"{f}  p={pr:.2f}", fontsize=10, color="#0b0b0b")

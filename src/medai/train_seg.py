@@ -5,12 +5,11 @@ import json
 import logging
 import time
 
-import numpy as np
 import torch
 from monai.data import CacheDataset, DataLoader, decollate_batch
 from monai.inferers import sliding_window_inference
 from monai.losses import DiceCELoss
-from monai.metrics import DiceMetric, HausdorffDistanceMetric
+from monai.metrics import DiceMetric
 from monai.transforms import (AsDiscrete, Compose, CropForegroundd, EnsureChannelFirstd, LoadImaged, Orientationd,
                               RandCropByPosNegLabeld, RandFlipd, RandRotate90d, RandShiftIntensityd,
                               ScaleIntensityRanged, Spacingd)

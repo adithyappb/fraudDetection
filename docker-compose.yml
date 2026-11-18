@@ -1,0 +1,34 @@
+# make train && docker compose up --build
+#   Orthanc UI     http://localhost:8042      (DICOM port 4242)
+#   Viewer + API   http://localhost:8000      (API docs at /docs)
+services:
+  orthanc:
+    image: orthancteam/orthanc:24.10.3
+    ports: ["8042:8042", "4242:4242"]
+    volumes:
+      - ./orthanc/orthanc.json:/etc/orthanc/orthanc.json:ro
+      - orthanc-db:/var/lib/orthanc/db
+    environment: {VERBOSE_ENABLED: "true"}
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fs http://localhost:8042/system || exit 1"]
+      interval: 10s
+      retries: 10
+
+  worker:                       # pulls new studies from Orthanc, runs inference, stores results
+    build: {context: ., dockerfile: docker/Dockerfile}
+    image: medimaging-ai:latest
+    command: ["python", "-m", "medai.service.worker"]
+    environment: {ORTHANC_URL: "http://orthanc:8042"}
+    volumes: [service-data:/app/data/service]
+    depends_on: {orthanc: {condition: service_healthy}}
+
+  api:                          # REST API + React viewer
+    image: medimaging-ai:latest
+    ports: ["8000:8000"]
+    environment: {ORTHANC_URL: "http://orthanc:8042"}
+    volumes: [service-data:/app/data/service]
+    depends_on: [worker]
+
+volumes:
+  orthanc-db:
+  service-data:

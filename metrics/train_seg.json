@@ -1,0 +1,43 @@
+{
+  "history": [
+    {
+      "iteration": 100,
+      "loss": 1.0243563652038574,
+      "val_dice": 0.20930242538452148,
+      "minutes": 0.9
+    },
+    {
+      "iteration": 200,
+      "loss": 0.48316776752471924,
+      "val_dice": 0.8997135758399963,
+      "minutes": 1.8
+    },
+    {
+      "iteration": 300,
+      "loss": 0.3452436029911041,
+      "val_dice": 0.7384496331214905,
+      "minutes": 2.7
+    },
+    {
+      "iteration": 400,
+      "loss": 0.5055208206176758,
+      "val_dice": 0.6961915493011475,
+      "minutes": 3.6
+    },
+    {
+      "iteration": 500,
+      "loss": 0.237546905875206,
+      "val_dice": 0.6497304439544678,
+      "minutes": 4.6
+    },
+    {
+      "iteration": 600,
+      "loss": 0.20185372233390808,
+      "val_dice": 0.9240076541900635,
+      "minutes": 5.5
+    }
+  ],
+  "best_val_dice": 0.9240076541900635,
+  "train_volumes": 30,
+  "val_volumes": 4
+}

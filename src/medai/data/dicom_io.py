@@ -120,11 +120,11 @@ def read(b: bytes) -> Dataset:
 
 
 def cxr_pixels(ds: Dataset) -> np.ndarray:
-    """-> float32 image in [0, 1], MONOCHROME2 (bright = dense)."""
-    a = ds.pixel_array.astype(np.float32)
-    a = a * float(ds.get("RescaleSlope", 1)) + float(ds.get("RescaleIntercept", 0))
-    lo, hi = np.percentile(a, [0.5, 99.5])
-    a = np.clip((a - lo) / max(hi - lo, 1e-6), 0, 1)
+    """-> float32 image in [0, 1], MONOCHROME2 (bright = dense).
+    Scaled by the stored bit depth - the same mapping as the 8-bit training PNGs (value / 255),
+    so the model sees identical intensities in training and in the service (tested)."""
+    a = ds.pixel_array.astype(np.float32) / float(2 ** int(ds.BitsStored) - 1)
+    a = np.clip(a, 0, 1)
     return 1 - a if ds.PhotometricInterpretation == "MONOCHROME1" else a
 
 

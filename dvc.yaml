@@ -10,9 +10,15 @@ stages:
   train_cls:
     cmd: python -m medai.train_cls
     deps: [data/processed, src/medai/train_cls.py, src/medai/models.py]
-    params: [classification]
+    params: [classification.arch, classification.pretrained, classification.epochs, classification.batch_size,
+             classification.lr, classification.weight_decay, classification.findings, classification.image_size]
     outs: [models/cxr_classifier.pt]
     metrics: [{metrics/train_cls.json: {cache: false}}]
+  calibrate:
+    cmd: python -m medai.calibrate
+    deps: [models/cxr_classifier.pt, data/processed, src/medai/calibrate.py]
+    params: [classification.target_specificity]
+    outs: [models/thresholds.json]
   train_seg:
     cmd: python -m medai.train_seg
     deps: [data/processed, src/medai/train_seg.py, src/medai/models.py]
@@ -21,7 +27,8 @@ stages:
     metrics: [{metrics/train_seg.json: {cache: false}}]
   evaluate:
     cmd: python -m medai.evaluate
-    deps: [models, data/processed, src/medai/evaluate.py, src/medai/explain.py]
+    deps: [models/cxr_classifier.pt, models/thresholds.json, models/spleen_unet3d.pt, data/processed,
+           src/medai/evaluate.py, src/medai/explain.py]
     params: [explain]
     metrics:
       - metrics/classification.json: {cache: false}

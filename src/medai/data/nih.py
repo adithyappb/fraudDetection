@@ -271,3 +271,21 @@ def make_phantoms(out_dir: Path, n: int, seed: int) -> None:
     (out_dir / "PHANTOM.txt").write_text(
         "Phantom images rendered from real NIH ChestX-ray14 metadata rows (labels, patients, age, sex, view)\n"
         "and real bounding boxes. Replace this folder with the real NIH data for real results.\n")
+
+
+def import_kaggle(src: str, dst: str) -> None:
+    """Arrange a Kaggle NIH download (full `nih-chest-xrays/data` or 5.6k `nih-chest-xrays/sample`)
+    into the layout the pipeline expects: dst/images/*.png + Data_Entry_2017.csv + BBox_List_2017.csv."""
+    import shutil
+    src_p, dst_p = Path(src), Path(dst)
+    (dst_p / "images").mkdir(parents=True, exist_ok=True)
+    for png in src_p.rglob("*.png"):
+        target = dst_p / "images" / png.name
+        if not target.exists():
+            shutil.move(str(png), target)
+    labels = next(iter(sorted(src_p.rglob("Data_Entry_2017*.csv"))), None) or next(src_p.rglob("sample_labels.csv"))
+    df = pd.read_csv(labels)
+    df["Patient Age"] = df["Patient Age"].astype(str).str.extract(r"(\d+)")[0].astype(int)   # sample uses '060Y'
+    df.to_csv(dst_p / "Data_Entry_2017.csv", index=False)
+    bbox = next(iter(src_p.rglob("BBox_List_2017.csv")), ASSETS / "BBox_List_2017.csv.gz")   # sample has none
+    pd.read_csv(bbox).to_csv(dst_p / "BBox_List_2017.csv", index=False)

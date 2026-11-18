@@ -1,0 +1,7 @@
+data/raw
+data/processed
+web/node_modules
+web/dist
+.dvc/cache
+.git
+**/__pycache__

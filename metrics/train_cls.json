@@ -1,0 +1,54 @@
+{
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 0.6835,
+      "val_macro_auroc": 0.5006,
+      "minutes": 3.5
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.611,
+      "val_macro_auroc": 0.6488,
+      "minutes": 7.0
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.5692,
+      "val_macro_auroc": 0.6919,
+      "minutes": 11.1
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.5246,
+      "val_macro_auroc": 0.7623,
+      "minutes": 14.7
+    },
+    {
+      "epoch": 5,
+      "train_loss": 0.4706,
+      "val_macro_auroc": 0.8154,
+      "minutes": 18.2
+    },
+    {
+      "epoch": 6,
+      "train_loss": 0.4468,
+      "val_macro_auroc": 0.8165,
+      "minutes": 21.5
+    }
+  ],
+  "best_val_macro_auroc": 0.8165,
+  "weights_init": "none",
+  "train_images": 4585,
+  "val_images": 733,
+  "pos_weight": {
+    "Atelectasis": 2.29,
+    "Cardiomegaly": 5.68,
+    "Effusion": 2.2,
+    "Infiltration": 1.65,
+    "Mass": 3.3,
+    "Nodule": 3.18,
+    "Pneumonia": 7.23,
+    "Pneumothorax": 3.81
+  }
+}

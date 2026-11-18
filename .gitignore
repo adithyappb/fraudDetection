@@ -7,3 +7,5 @@
 __pycache__/
 .pytest_cache/
 metrics/test_probs.npy
+/data/orthanc-db
+/data/orthanc.local.json

@@ -1,0 +1,128 @@
+{
+  "test_images": 1682,
+  "macro_auroc": 0.7836750679815103,
+  "per_finding": {
+    "Atelectasis": {
+      "auroc": 0.6879170072070734,
+      "ap": 0.4007958120985601,
+      "prevalence": 0.2556480380499406,
+      "threshold": 0.3400704562664032,
+      "sensitivity": 0.5837209302325581,
+      "specificity": 0.694888178913738,
+      "positives": 430
+    },
+    "Cardiomegaly": {
+      "auroc": 0.9872791287971834,
+      "ap": 0.9267237074293304,
+      "prevalence": 0.12306777645659929,
+      "threshold": 0.007241662126034498,
+      "sensitivity": 0.9951690821256038,
+      "specificity": 0.6684745762711864,
+      "positives": 207
+    },
+    "Effusion": {
+      "auroc": 0.9749809305873379,
+      "ap": 0.9331257537482167,
+      "prevalence": 0.25980975029726516,
+      "threshold": 0.05324247106909752,
+      "sensitivity": 0.9908466819221968,
+      "specificity": 0.6795180722891566,
+      "positives": 437
+    },
+    "Infiltration": {
+      "auroc": 0.6097102322157532,
+      "ap": 0.38226572820137356,
+      "prevalence": 0.3032104637336504,
+      "threshold": 0.4527406692504883,
+      "sensitivity": 0.4137254901960784,
+      "specificity": 0.7056313993174061,
+      "positives": 510
+    },
+    "Mass": {
+      "auroc": 0.8453710468635842,
+      "ap": 0.47569211304071074,
+      "prevalence": 0.12366230677764566,
+      "threshold": 0.17875127494335175,
+      "sensitivity": 0.8269230769230769,
+      "specificity": 0.7157394843962008,
+      "positives": 208
+    },
+    "Nodule": {
+      "auroc": 0.7677743342516069,
+      "ap": 0.38351802501752874,
+      "prevalence": 0.14387633769322236,
+      "threshold": 0.18788614869117737,
+      "sensitivity": 0.756198347107438,
+      "specificity": 0.6909722222222222,
+      "positives": 242
+    },
+    "Pneumonia": {
+      "auroc": 0.8045531039640986,
+      "ap": 0.34663242705727476,
+      "prevalence": 0.09155766944114149,
+      "threshold": 0.09564533829689026,
+      "sensitivity": 0.7467532467532467,
+      "specificity": 0.6793193717277487,
+      "positives": 154
+    },
+    "Pneumothorax": {
+      "auroc": 0.5918147599654449,
+      "ap": 0.169711187678706,
+      "prevalence": 0.13198573127229488,
+      "threshold": 0.23299826681613922,
+      "sensitivity": 0.16666666666666666,
+      "specificity": 0.8910958904109589,
+      "positives": 222
+    }
+  },
+  "subgroups": {
+    "sex=F": {
+      "n": 742,
+      "macro_auroc": 0.7970560376267636
+    },
+    "sex=M": {
+      "n": 940,
+      "macro_auroc": 0.7724287701841022
+    },
+    "age_band=40-60": {
+      "n": 781,
+      "macro_auroc": 0.7732600986491469
+    },
+    "age_band=<40": {
+      "n": 519,
+      "macro_auroc": 0.7921335756899385
+    },
+    "age_band=>60": {
+      "n": 382,
+      "macro_auroc": 0.7931731143492706
+    },
+    "view=AP": {
+      "n": 715,
+      "macro_auroc": 0.7820575854465595
+    },
+    "view=PA": {
+      "n": 967,
+      "macro_auroc": 0.7820392526623718
+    }
+  },
+  "cardiomegaly_false_positive_rate_by_view": {
+    "AP": 0.3492822966507177,
+    "PA": 0.31839622641509435
+  },
+  "gradcam_localisation": {
+    "boxes": 984,
+    "pointing_game": 0.3079268292682927,
+    "mean_iou": 0.10327791441001637,
+    "per_finding_pointing": {
+      "Atelectasis": 0.183,
+      "Cardiomegaly": 0.925,
+      "Effusion": 0.19,
+      "Infiltration": 0.228,
+      "Mass": 0.329,
+      "Nodule": 0.051,
+      "Pneumonia": 0.292,
+      "Pneumothorax": 0.112
+    }
+  },
+  "weights_init": "none"
+}
