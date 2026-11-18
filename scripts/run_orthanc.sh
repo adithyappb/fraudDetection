@@ -4,8 +4,8 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 mkdir -p data/orthanc-db
 python3 - <<'PY'
-import json; c = json.load(open("orthanc/orthanc.json"))
-c["StorageDirectory"] = c["IndexDirectory"] = "data/orthanc-db"
+import json, os; c = json.load(open("orthanc/orthanc.json"))
+c["StorageDirectory"] = c["IndexDirectory"] = os.path.abspath("data/orthanc-db")   # Orthanc resolves relative paths from the config file
 json.dump(c, open("data/orthanc.local.json", "w"), indent=2)
 PY
 if command -v Orthanc >/dev/null; then

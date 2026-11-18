@@ -9,3 +9,4 @@ __pycache__/
 metrics/test_probs.npy
 /data/orthanc-db
 /data/orthanc.local.json
+/data/data
