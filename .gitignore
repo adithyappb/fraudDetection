@@ -1,0 +1,9 @@
+/data/raw
+/data/processed
+/data/service
+/models
+/web/node_modules
+/web/dist
+__pycache__/
+.pytest_cache/
+metrics/test_probs.npy

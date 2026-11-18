@@ -1,0 +1,38 @@
+# Single source of configuration. DVC tracks these params: changing one re-runs only the affected stages.
+data:
+  source: auto            # auto | real | phantom   (auto = real files if present in data/raw, else phantom)
+  seed: 7
+  cxr_raw_dir: data/raw/nih-cxr14         # images/*.png + Data_Entry_2017*.csv + BBox_List_2017.csv
+  ct_raw_dir: data/raw/Task09_Spleen      # imagesTr/*.nii.gz, labelsTr/*.nii.gz, dataset.json (MSD layout)
+  phantom_cxr_images: 7000                 # phantom NIH rows (all 880 bbox images + positive-enriched sample)
+  phantom_ct_volumes: 40
+
+classification:
+  findings: [Atelectasis, Cardiomegaly, Effusion, Infiltration, Mass, Nodule, Pneumonia, Pneumothorax]
+  image_size: 160
+  arch: efficientnet_b0        # efficientnet_b0 | densenet121
+  pretrained: imagenet         # imagenet (torchvision weights, downloaded on first use) | none
+  epochs: 6
+  batch_size: 32
+  lr: 0.001
+  weight_decay: 0.0001
+  split: [0.75, 0.12, 0.13]    # by PATIENT (NIH has many follow-ups per patient); box patients -> test
+
+segmentation:
+  roi: [64, 64, 64]
+  pixdim: [1.5, 1.5, 2.0]
+  hu_window: [-57, 164]        # MONAI spleen-tutorial intensity window
+  channels: [16, 32, 64, 128]
+  max_iterations: 600
+  val_every: 100
+  lr: 0.0003
+
+explain:
+  cam_threshold: 0.5           # fraction of CAM max used to binarise for IoU against bounding boxes
+
+service:
+  orthanc_url: http://localhost:8042
+  poll_seconds: 2
+  db_path: data/service/results.db
+  results_dir: data/service/results
+  upload_overlay_to_orthanc: true

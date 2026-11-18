@@ -1,0 +1,68 @@
+{
+  "images": 7000,
+  "patients": 5235,
+  "split_images": {
+    "train": 4585,
+    "test": 1682,
+    "val": 733
+  },
+  "positives_per_split": {
+    "test": {
+      "Atelectasis": 430,
+      "Cardiomegaly": 207,
+      "Effusion": 437,
+      "Infiltration": 510,
+      "Mass": 208,
+      "Nodule": 242,
+      "Pneumonia": 154,
+      "Pneumothorax": 222
+    },
+    "train": {
+      "Atelectasis": 734,
+      "Cardiomegaly": 138,
+      "Effusion": 786,
+      "Infiltration": 1232,
+      "Mass": 385,
+      "Nodule": 412,
+      "Pneumonia": 86,
+      "Pneumothorax": 295
+    },
+    "val": {
+      "Atelectasis": 122,
+      "Cardiomegaly": 35,
+      "Effusion": 120,
+      "Infiltration": 208,
+      "Mass": 49,
+      "Nodule": 81,
+      "Pneumonia": 9,
+      "Pneumothorax": 46
+    }
+  },
+  "prevalence_pct": {
+    "Atelectasis": 18.37,
+    "Cardiomegaly": 5.43,
+    "Effusion": 19.19,
+    "Infiltration": 27.86,
+    "Mass": 9.17,
+    "Nodule": 10.5,
+    "Pneumonia": 3.56,
+    "Pneumothorax": 8.04
+  },
+  "no_finding_pct": 31.24,
+  "view_pct": {
+    "PA": 61.0,
+    "AP": 39.0
+  },
+  "sex_pct": {
+    "M": 56.7,
+    "F": 43.3
+  },
+  "age_median": 50.0,
+  "test_boxes": 984,
+  "ct_volumes": {
+    "test": 6,
+    "val": 4,
+    "train": 30
+  },
+  "source": "phantom"
+}

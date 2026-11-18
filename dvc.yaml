@@ -1,0 +1,29 @@
+# DVC pipeline: `dvc repro` re-runs only stages whose code, data or params changed.
+# Raw data is versioned separately with `dvc add data/raw` (see README).
+stages:
+  preprocess:
+    cmd: python -m medai.preprocess
+    deps: [data/raw, src/medai/preprocess.py, src/medai/data]
+    params: [data, classification.findings, classification.image_size, classification.split]
+    outs: [data/processed]
+    metrics: [{metrics/data_summary.json: {cache: false}}]
+  train_cls:
+    cmd: python -m medai.train_cls
+    deps: [data/processed, src/medai/train_cls.py, src/medai/models.py]
+    params: [classification]
+    outs: [models/cxr_classifier.pt]
+    metrics: [{metrics/train_cls.json: {cache: false}}]
+  train_seg:
+    cmd: python -m medai.train_seg
+    deps: [data/processed, src/medai/train_seg.py, src/medai/models.py]
+    params: [segmentation]
+    outs: [models/spleen_unet3d.pt]
+    metrics: [{metrics/train_seg.json: {cache: false}}]
+  evaluate:
+    cmd: python -m medai.evaluate
+    deps: [models, data/processed, src/medai/evaluate.py, src/medai/explain.py]
+    params: [explain]
+    metrics:
+      - metrics/classification.json: {cache: false}
+      - metrics/segmentation.json: {cache: false}
+    plots: [docs/figures/roc_per_finding.png, docs/figures/gradcam_examples.png]
