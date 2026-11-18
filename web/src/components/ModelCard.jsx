@@ -14,8 +14,8 @@ export default function ModelCard() {
       <p className="warn">{m.disclaimer}</p>
       {d && (
         <p className="muted">
-          Data: {d.source === 'phantom' ? 'phantom radiographs rendered from real NIH ChestX-ray14 metadata and radiologist boxes' : 'NIH ChestX-ray14'} ·
-          {' '}{d.images.toLocaleString()} images / {d.patients.toLocaleString()} patients, split by patient · CT: MSD Task09 Spleen {d.source === 'phantom' ? '(phantom volumes)' : ''}
+          Chest X-ray: {d.images.toLocaleString()} images / {d.patients.toLocaleString()} patients, split by patient ·
+          {' '}CT: {Object.values(d.ct_volumes).reduce((a, b) => a + b, 0)} spleen-labelled volumes
         </p>
       )}
       {c && (

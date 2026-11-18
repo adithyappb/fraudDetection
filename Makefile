@@ -19,8 +19,8 @@ data:           ## use real data in data/raw if present, else render phantoms; t
 train:          ## DVC pipeline: preprocess -> train_cls -> train_seg -> evaluate (only changed stages rerun)
 	dvc repro
 
-metrics:        ## show tracked metrics
-	dvc metrics show
+metrics:        ## test-set metrics table (tracked by DVC; raw: dvc metrics show)
+	$(PY) scripts/show_metrics.py
 
 test:
 	$(PY) -m pytest -q -W ignore
