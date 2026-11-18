@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { api } from './api'
 import Worklist from './components/Worklist'
 import Viewer from './components/Viewer'
@@ -15,6 +15,7 @@ export default function App() {
   const [study, setStudy] = useState(null)
   const [finding, setFinding] = useState(null)
   const [error, setError] = useState(null)
+  const shownStudy = useRef(null)
 
   const refresh = useCallback(async () => {
     try {
@@ -36,8 +37,12 @@ export default function App() {
   const loadStudy = useCallback(async () => {
     if (!selected) return
     const s = await api.study(selected)
+    const top = s.ai?.findings?.[0]?.finding ?? null
+    // new study -> show its most likely finding; same study refreshed -> keep the reader's choice
+    const sameStudy = shownStudy.current === s.study_id
+    shownStudy.current = s.study_id
+    setFinding((f) => (sameStudy && s.ai?.findings?.some((x) => x.finding === f) ? f : top))
     setStudy(s)
-    setFinding((f) => (s.ai?.findings?.some((x) => x.finding === f) ? f : s.ai?.findings?.[0]?.finding ?? null))
   }, [selected])
 
   useEffect(() => { loadStudy() }, [loadStudy])
@@ -63,8 +68,8 @@ export default function App() {
           <Worklist studies={studies} selected={selected} onSelect={setSelected} />
           {study ? (
             <>
-              <Viewer key={study.study_id} study={study} finding={finding} />
-              <ReviewPanel key={study.study_id} study={study} finding={finding} onFinding={setFinding} onDecided={onDecided} />
+              <Viewer key={`v-${study.study_id}`} study={study} finding={finding} />
+              <ReviewPanel key={`r-${study.study_id}`} study={study} finding={finding} onFinding={setFinding} onDecided={onDecided} />
             </>
           ) : (
             <div className="empty">No studies yet — send DICOM to Orthanc (make send-studies).</div>
