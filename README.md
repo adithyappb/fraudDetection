@@ -210,15 +210,3 @@ tests/                      18 tests
 docker/, docker-compose.yml, k8s/, scripts/
 docs/                       REPORT.md, ARCHITECTURE.md, API.md, figures/
 ```
-
-## Troubleshooting
-
-| Symptom | Fix |
-|---|---|
-| `403 Forbidden` from Kaggle | Accept the competition rules (Section 2, step 3) |
-| `kaggle: command not found` | `pip install kaggle` |
-| Feast install/import fails (e.g. on Windows) | The pipeline falls back to the built-in point-in-time store automatically. Same features, verified equal by a test |
-| `FileNotFoundError: artifacts/xgb_model.json` when starting the API | Run `make train` first |
-| Dashboard says "API not reachable" | Start the API first, or set `API_URL=http://host:8000` |
-| Out of memory on IEEE-CIS | Close other apps. The loader already reads only ~45 of the 394 columns |
-| Start over | `make clean && make train` |
