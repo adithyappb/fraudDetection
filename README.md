@@ -186,7 +186,7 @@ kubectl -n fraud create job replay-2 --from=cronjob/replay-producer      # repla
 kubectl -n fraud create job drift-now --from=cronjob/drift-monitor        # run a drift check now
 ```
 
-When the drift job retrains, the API hot-reloads the new model from the shared volume within 30 s.
+When the drift job retrains, the API hot-reloads the new model from the shared volume within 30s.
 
 ## Project layout
 
