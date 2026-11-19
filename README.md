@@ -157,13 +157,3 @@ docker/  docker-compose.yml  orthanc/      containers + Orthanc config
 docs/                                      REPORT · ARCHITECTURE · API · MODEL_CARD · DICOM · figures
 tests/                                     pytest suite
 ```
-
-## Troubleshooting
-
-| Symptom | Fix |
-|---|---|
-| `403` from Kaggle | Accept the dataset terms on its Kaggle page, and check `~/.kaggle/kaggle.json` |
-| `make send` → "Could not associate" | Orthanc isn't running (`make orthanc`), or port 4242 is in use |
-| Worklist stays empty | The worker runs inside `make serve` (`RUN_WORKER=1`). Studies are processed after Orthanc marks them stable (3 s) |
-| "ImageNet weights unavailable" | No internet. Training continues from scratch; re-run with internet for transfer learning |
-| Viewer shows "API unreachable" | Start `make serve`. For frontend development: `cd web && npm run dev` (proxies `/api` to :8000) |
