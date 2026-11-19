@@ -50,7 +50,7 @@ IEEE-CIS is the dataset used because it is the only option with real **entity co
 address, e-mail, device fingerprint) for the fraud-ring graph, plus a real time axis for velocity
 features. See [docs/REPORT.md](docs/REPORT.md#dataset-choice).
 
-**Option A – Kaggle CLI (recommended)**
+**Kaggle CLI (recommended)**
 
 1. Sign in at kaggle.com → profile picture → **Settings** → **API** → **Create New Token**. This downloads `kaggle.json`.
 2. Put it in place:
@@ -70,17 +70,6 @@ features. See [docs/REPORT.md](docs/REPORT.md#dataset-choice).
    kaggle competitions download -c ieee-fraud-detection -f train_identity.csv -p data/raw
    cd data/raw && unzip -o '*.zip' && rm -f *.zip && cd ../..
    ```
-
-**Option B – browser (if the CLI or your network blocks Kaggle's API)**
-
-Accept the rules (step 3 above). Then on the competition's **Data** tab, download `train_transaction.csv`
-and `train_identity.csv` (or "Download All" and unzip). Place both files here:
-
-```
-data/raw/train_transaction.csv     (~650 MB)
-data/raw/train_identity.csv        (~25 MB)
-```
-
 Only these two files are used (the competition's `test_*` files have no labels).
 
 **No data? It still runs.** If `data/raw/train_transaction.csv` is missing, the pipeline uses a built-in
