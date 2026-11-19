@@ -89,7 +89,7 @@ make metrics               # = dvc metrics show
 ```
 
 - Only stages whose code, data or `params.yaml` changed re-run. Try changing `classification.epochs` and run `dvc repro` again.
-- Takes about 35 min on a 2-core CPU.
+- Takes about 35min on a 2-core CPU.
 - With internet access, ImageNet weights download automatically (`classification.pretrained: imagenet`). Without it, training falls back to random initialisation and logs a warning.
 - Outputs:
   - `models/` (classifier, thresholds, 3D U-Net)
