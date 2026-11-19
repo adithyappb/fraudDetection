@@ -25,7 +25,7 @@ Results, design decisions and challenges: **[docs/REPORT.md](docs/REPORT.md)** �
 
 ## 1. Setup (once)
 
-Requires **Python 3.11–3.13** (3.11 recommended; Feast has the widest support there), ~4 GB RAM, ~3 GB disk.
+Requires **Python 3.11–3.13** (3.11 recommended; Feast has the widest support there), ~4GB RAM, ~3GB disk.
 
 ```bash
 unzip fraud-platform.zip && cd fraud-platform
