@@ -1,6 +1,6 @@
 # Real-Time Financial Fraud Detection Platform
 
-Reads live transactions from Kafka, scores each one for fraud risk in **~1–3 ms**, links suspicious
+Reads live transactions from Kafka, scores each one for fraud risk in **~1–3ms**, links suspicious
 accounts into **fraud rings** with a graph neural network, and gives analysts a dashboard to work
 the resulting cases. Drift is monitored with Evidently and triggers automatic retraining.
 
